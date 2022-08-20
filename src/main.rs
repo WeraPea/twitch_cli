@@ -95,11 +95,13 @@ fn main() {
             let video: usize = video.trim().parse().unwrap();
             let mut videos_data = videos_data;
             let url = videos_data.nth(video).unwrap().3;
-            std::process::Command::new("mpv")
-                .arg(&url)
-                .args(the_rest)
-                .output()
-                .unwrap();
+            if let Ok(fork::Fork::Child) = fork::daemon(false, false) {
+                std::process::Command::new("mpv")
+                    .arg(&url)
+                    .args(the_rest)
+                    .output()
+                    .unwrap();
+            }
             println!("streamlink {} 480p --player=mpv", url);
         }
         "2" => {
@@ -109,12 +111,14 @@ fn main() {
                 "{} - {} - {} - {} - {}",
                 game, title, streamer, url, thumbnail
             );
-            std::process::Command::new("mpv")
-                .arg(&url)
-                .args(the_rest)
-                .output()
-                .unwrap();
-            println!("streamlink {} 480p --player=mpv", url);
+            if let Ok(fork::Fork::Child) = fork::daemon(false, false) {
+                std::process::Command::new("mpv")
+                    .arg(&url)
+                    .args(the_rest)
+                    .output()
+                    .unwrap();
+                println!("streamlink {} 480p --player=mpv", url);
+            }
         }
         "3" => {
             println!("bye");
